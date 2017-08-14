@@ -1,3 +1,4 @@
+v1.1.0
 * Added a nice error message when the url doesn't start with /
 * Added a `parse` command that allows generating just the AST
 
