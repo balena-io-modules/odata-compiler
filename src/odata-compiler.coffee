@@ -15,6 +15,8 @@ module.exports = (url, engine) ->
 	return sql['query']
 
 module.exports.parse = (url) ->
+	if url[0] isnt '/'
+		throw new Error('URL must start with a /')
 	try
 		return odataParser.matchAll(url, 'Process')
 	catch e
