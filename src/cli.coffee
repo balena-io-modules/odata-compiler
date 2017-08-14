@@ -2,8 +2,7 @@ program = require 'commander'
 
 runCompile = (inputUrl) ->
 	odataCompiler = require './odata-compiler'
-	url = inputUrl
-	sql = odataCompiler(url, program.engine)
+	sql = odataCompiler(inputUrl, program.engine)
 
 	console.log("Parsing OData URL: #{inputUrl}")
 	console.log('')
@@ -16,6 +15,16 @@ program
 program.command('compile <input-URL>')
 	.description('compile the input OData Url into SQL')
 	.action(runCompile)
+
+program.command('parse <input-URL>')
+	.description('parse the input OData Url into an OData AST')
+	.action (inputUrl) ->
+		odataCompiler = require './odata-compiler'
+		ast = odataCompiler.parse(inputUrl)
+
+		console.log("Parsing OData URL: #{inputUrl}")
+		console.log('')
+		console.log(require('util').inspect(ast, depth: null))
 
 program.command('help')
 	.description('print the help')
