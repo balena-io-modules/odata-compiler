@@ -3,28 +3,34 @@ AbstractSQLCompiler = require '@resin/abstract-sql-compiler'
 { OData2AbstractSQL } = require '@resin/odata-to-abstract-sql'
 clientModel = require '@resin/odata-to-abstract-sql/test/client-model.json'
 
-odataparser = ODataParser.createInstance()
-odata2abstractsql = {}
-odata2abstractsql['ewa'] = OData2AbstractSQL.createInstance()
-odata2abstractsql['ewa'].clientModel = clientModel
+odataParser = ODataParser.createInstance()
+odata2AbstractSql = OData2AbstractSQL.createInstance()
+odata2AbstractSql.clientModel = clientModel
 
 module.exports = (url, engine) ->
+	odataAST = module.exports.parse(url)
+	abstractSql = module.exports.translate(odataAST)
+	sql = module.exports.translate(abstractSql, engine)
+
+	return sql['query']
+
+module.exports.parse = (url) ->
 	try
-		parse = odataparser.matchAll(url, 'Process')
+		return odataParser.matchAll(url, 'Process')
 	catch e
 		e.message = "Error parsing the OData URL: #{e.message}"
 		throw e
 
+module.exports.translate = (odataAST) ->
 	try
-		result = odata2abstractsql['ewa'].match(parse, 'Process', ['GET', {}])
+		return odata2AbstractSql.match(odataAST, 'Process', ['GET', {}])
 	catch e
 		e.message = "Error transforming OData Url into AbstractSQL: #{e.message}"
 		throw e
 
+module.exports.compile = (abstractSql, engine) ->
 	try
-		sql = AbstractSQLCompiler[engine].compileRule(result)
+		return AbstractSQLCompiler[engine].compileRule(abstractSql)
 	catch e
 		e.message = "Error compiling AbstractSQL into SQL: #{e.message}"
 		throw e
-
-	return sql['query']
