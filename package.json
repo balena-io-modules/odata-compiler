@@ -1,5 +1,5 @@
 {
-  "name": "@resin/odata-compiler",
+  "name": "@balena.io/odata-compiler",
   "version": "1.1.1",
   "description": "An easy way to use the compile chain from OData to SQL",
   "main": "bin/odata-compiler.js",
